@@ -6,11 +6,10 @@ club_bp = Blueprint('clubs', __name__, template_folder='templates')
 
 @club_bp.route('/')
 def index():
-  query = db.select(Club)
-  clubs = db.session.scalars(query).all()
+  clubs = db.session.scalars(db.select(Club)).all()
   return render_template('clubs/index.html',
-                        title='Clubs Page',
-                        clubs=clubs)                      
+                         title='Clubs Page',
+                         clubs=clubs)
 
 @club_bp.route('/new', methods=['GET', 'POST'])
 def new_club():
@@ -24,27 +23,28 @@ def new_club():
     db.session.add(club)
     db.session.commit()
     flash('add new club successfully', 'success')
-    return redirect(url_for('clubs.all_clubs'))
+    return redirect(url_for('clubs.index'))
   
   return render_template('clubs/new_club.html',
                          title='New Club Page')
 
 @club_bp.route('/search', methods=['GET', 'POST'])
 def search_club():
-  club_name = request.form['club_name']
-  club = db.session.scalars(db.select(Club).where(Club.name.like(f'%{club_name}%'))).all()
-  return render_template('clubs/search_club.html',
-                  title='Search Club Page',
-                  clubs=club)
-
+  if request.method == 'POST':
+    club_name = request.form['club_name']
+    clubs = db.session.scalars(db.select(Club).where(Club.name.like(f'%{club_name}%'))).all()
+    return render_template('clubs/search_club.html',
+                          title='Search Club Page',
+                          clubs=clubs)
+  
 @club_bp.route('/<int:id>/info')
 def info_club(id):
-  clube = db.session.get(Club, id)
+  club = db.session.get(Club, id)
   return render_template('clubs/info_club.html',
-                         title='Club Info Page',
-                         club=clube)        
+                         title='Info Club Page',
+                         club=club)
 
-@club_bp.route('/<int:id>/update', methods=['GET', 'POST'])
+@club_bp.route('/<int:id>/update', methods=['GET','POST'])
 def update_club(id):
   club = db.session.get(Club, id)
   if request.method == 'POST':
@@ -52,15 +52,18 @@ def update_club(id):
     stadium = request.form['stadium']
     year = int(request.form['year'])
     logo = request.form['logo']
+
     club.name = name
     club.stadium = stadium
     club.year = year
     club.logo = logo
+
     db.session.add(club)
     db.session.commit()
+
     flash('update club successfully', 'success')
-    return redirect(url_for('all_clubs'))
+    return redirect(url_for('clubs.index'))
+  
   return render_template('clubs/update_club.html',
                          title='Update Club Page',
                          club=club)
-                      
