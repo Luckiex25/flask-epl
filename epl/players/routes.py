@@ -13,58 +13,64 @@ def index():
 
 @player_bp.route('/new', methods=['GET', 'POST'])
 def new_player():
-  club = db.session.scalars(db.select(Club)).all()
+  clubs = db.session.scalars(db.select(Club)).all()
   if request.method == 'POST':
     name = request.form['name']
     position = request.form['position']
-    Nationality = request.form['nationality']
+    nationality = request.form['nationality']
     goals = int(request.form['goals'])
+    clean_sheets = int(request.form['clean_sheets'])
     squad_no = int(request.form['squad_no'])
     img = request.form['img']
     club_id = int(request.form['club_id'])
 
-    player = Player(name=name, position=position, Nationality=Nationality, goals=goals, squad_no=squad_no, img=img, club_id=club_id)
+    player = Player(name=name, position=position, nationality=nationality,
+                    goals=goals, clean_sheets=clean_sheets, squad_no=squad_no, img=img, club_id=club_id)
     db.session.add(player)
     db.session.commit()
     flash('add new player successfully', 'success')
     return redirect(url_for('players.index'))
-  return render_template('players/new_player.html',
-                         title='New Player Page'
-                         , clubs=club)
 
-@player_bp.route('/search', methods=['GET', 'POST'])
+  return render_template('players/new_player.html',
+                         title='New Player Page',
+                         clubs=clubs)
+
+@player_bp.route('/search', methods=['POST'])
 def search_player():
   if request.method == 'POST':
     player_name = request.form['player_name']
     players = db.session.scalars(db.select(Player).where(Player.name.like(f'%{player_name}%'))).all()
-  return render_template('players/search_player.html',
-                        title='Search Player Page',
-                        players=players)
-
+    return render_template('players/search_player.html',
+                           title='Search Player Page',
+                           players=players)
+  
 @player_bp.route('/<int:id>/info')
 def info_player(id):
   player = db.session.get(Player, id)
   return render_template('players/info_player.html',
-                        title='Info Player Page',
-                        player=player)
-@player_bp.route('/<int:id>/update', methods=('GET', 'POST'))
+                         title='Info Player Page',
+                         player=player)
+
+@player_bp.route('/<int:id>/update', methods=['GET', 'POST'])
 def update_player(id):
   player = db.session.get(Player, id)
   query = db.select(Club)
-  clubs = db.session.scalars().all()
+  clubs = db.session.scalars(query).all()
   if request.method == 'POST':
     name = request.form['name']
     position = request.form['position']
-    Nationality = request.form['nationality']
+    nationality = request.form['nationality']
     goals = int(request.form['goals'])
+    clean_sheets = int(request.form['clean_sheets'])
     squad_no = int(request.form['squad_no'])
     img = request.form['img']
     club_id = int(request.form['club_id'])
 
     player.name = name
     player.position = position
-    player.Nationality = Nationality
+    player.nationality = nationality
     player.goals = goals
+    player.clean_sheets = clean_sheets
     player.squad_no = squad_no
     player.img = img
     player.club_id = club_id
@@ -73,6 +79,24 @@ def update_player(id):
     db.session.commit()
     flash('update player successfully', 'success')
     return redirect(url_for('players.index'))
+  
   return render_template('players/update_player.html',
-                        title='Update Player Page',
+                         title='Update Player Page',
+                         player=player,
+                         clubs=clubs)
+
+@player_bp.route('/<int:id>/clean_sheets', methods=['GET', 'POST'])
+def clean_sheets(id):
+  player = db.session.get(Player, id)
+  if request.method == 'POST':
+    clean_sheets = int(request.form['clean_sheets'])
+    player.clean_sheets = clean_sheets
+    db.session.add(player)
+    db.session.commit()
+    flash('update clean sheets successfully', 'success')
+    return redirect(url_for('players.index'))
+
+  return render_template('players/clean_sheets.html',
+                        title='Clean Sheets Page',
                         player=player)
+
