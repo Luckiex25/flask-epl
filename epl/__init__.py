@@ -7,8 +7,8 @@ from epl.players.routes import player_bp
 
 def create_app():
   app = Flask(__name__)
-  app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/epl_s02_db'
-  # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/epl_s02_db'
+  #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/epl_s02_db'
+  app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/epl_s02_db'
   app.secret_key = b'hguyfdrerdfguhiophgytrt'
   
   db.init_app(app)

@@ -83,28 +83,19 @@ def new_player():
   if request.method == 'POST':
     name = request.form['name']
     position = request.form['position']
-<<<<<<< HEAD
-    ationality = request.form['nationality']
-=======
     nationality = request.form['nationality']
->>>>>>> 569a98c98654ca20b7268642ddb396a98dea7c6a
     goals = int(request.form['goals'])
     clean_sheets = int(request.form['clean_sheets'])
     squad_no = int(request.form['squad_no'])
     img = request.form['img']
     club_id = int(request.form['club_id'])
 
-<<<<<<< HEAD
     player = Player(name=name, position=position, nationality=nationality, goals=goals, clean_sheets=clean_sheets, squad_no=squad_no, img=img, club_id=club_id)
-=======
-    player = Player(name=name, position=position, nationality=nationality,
-                    goals=goals, squad_no=squad_no, img=img, club_id=club_id)
->>>>>>> 569a98c98654ca20b7268642ddb396a98dea7c6a
     db.session.add(player)
     db.session.commit()
     flash('add new player successfully', 'success')
     return redirect(url_for('all_players'))
-
+  
   return render_template('players/new_player.html',
                          title='New Player Page',
                          clubs=clubs)
