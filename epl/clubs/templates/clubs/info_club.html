@@ -11,7 +11,14 @@
     <div class="row mb-3">
       <div class="col-md-4 mt-3">
         <div class="card">
-          <img src="{{ club.logo }}" alt="" class="img-thumbnail p-5">
+          {% if club.name=='Liverpool' %}
+              <img src="{{club.logo}}" class="img-thumbnail p-5 bg-danger">
+          {% else %}
+              <img src="{{club.logo}}" class="img-thumbnail p-5">
+          {% endif %}
+          
+          
+          
           <div>
             <h4 class="text-center text-success">
               Club Logo
@@ -24,17 +31,17 @@
           <div class="card-body">
             <div class="row">
               <div class="col"><h2>Club Name</h2></div>
-              <div class="col"><h2 class="text-secondary float-end">{{ club.name }}</h2></div>
+              <div class="col"><h2 class="text-secondary float-end">{{club.name}}</h2></div>
             </div>
             <hr>
             <div class="row">
               <div class="col"><h2>Stadium Name</h2></div>
-              <div class="col"><h2 class="text-secondary float-end">{{ club.stadium }}</h2></div>
+              <div class="col"><h2 class="text-secondary float-end">{{club.stadium}}</h2></div>
             </div>
             <hr>
             <div class="row">
               <div class="col"><h2>Year</h2></div>
-              <div class="col"><h2 class="text-secondary float-end">EST. {{ club.year }}</h2></div>
+              <div class="col"><h2 class="text-secondary float-end">EST. {{club.year}}</h2></div>
             </div>
             <hr>
             <div class="row mt-5">

@@ -32,20 +32,21 @@ def new_club():
 
 @app.route('/clubs/search', methods=['GET', 'POST'])
 def search_club():
-  club_name = request.form['club_name']
-  club = db.session.scalars(db.select(Club).where(Club.name.like(f'%{club_name}%'))).all()
-  return render_template('clubs/search_club.html',
-                  title='Search Club Page',
-                  clubs=club)
-
+  if request.method == 'POST':
+    club_name = request.form['club_name']
+    clubs = db.session.scalars(db.select(Club).where(Club.name.like(f'%{club_name}%'))).all()
+    return render_template('clubs/search_club.html',
+                          title='Search Club Page',
+                          clubs=clubs)
+  
 @app.route('/clubs/<int:id>/info')
 def info_club(id):
-  clube = db.session.get(Club, id)
+  club = db.session.get(Club, id)
   return render_template('clubs/info_club.html',
-                         title='Club Info Page',
-                         club=clube)        
+                         title='Info Club Page',
+                         club=club)
 
-@app.route('/clubs/<int:id>/update', methods=['GET', 'POST'])
+@app.route('/clubs/<int:id>/update', methods=['GET','POST'])
 def update_club(id):
   club = db.session.get(Club, id)
   if request.method == 'POST':
@@ -53,14 +54,18 @@ def update_club(id):
     stadium = request.form['stadium']
     year = int(request.form['year'])
     logo = request.form['logo']
+
     club.name = name
     club.stadium = stadium
     club.year = year
     club.logo = logo
+
     db.session.add(club)
     db.session.commit()
+
     flash('update club successfully', 'success')
     return redirect(url_for('all_clubs'))
+  
   return render_template('clubs/update_club.html',
                          title='Update Club Page',
                          club=club)
@@ -74,31 +79,41 @@ def all_players():
 
 @app.route('/players/new', methods=['GET', 'POST'])
 def new_player():
-  club = db.session.scalars(db.select(Club)).all()
+  clubs = db.session.scalars(db.select(Club)).all()
   if request.method == 'POST':
     name = request.form['name']
     position = request.form['position']
+<<<<<<< HEAD
     ationality = request.form['nationality']
+=======
+    nationality = request.form['nationality']
+>>>>>>> 569a98c98654ca20b7268642ddb396a98dea7c6a
     goals = int(request.form['goals'])
     clean_sheets = int(request.form['clean_sheets'])
     squad_no = int(request.form['squad_no'])
     img = request.form['img']
     club_id = int(request.form['club_id'])
 
+<<<<<<< HEAD
     player = Player(name=name, position=position, nationality=nationality, goals=goals, clean_sheets=clean_sheets, squad_no=squad_no, img=img, club_id=club_id)
+=======
+    player = Player(name=name, position=position, nationality=nationality,
+                    goals=goals, squad_no=squad_no, img=img, club_id=club_id)
+>>>>>>> 569a98c98654ca20b7268642ddb396a98dea7c6a
     db.session.add(player)
     db.session.commit()
     flash('add new player successfully', 'success')
     return redirect(url_for('all_players'))
-  return render_template('players/new_player.html',
-                         title='New Player Page'
-                         , clubs=club)
 
-@app.route('/players/search', methods=['GET', 'POST'])
+  return render_template('players/new_player.html',
+                         title='New Player Page',
+                         clubs=clubs)
+
+@app.route('/players/search', methods=['POST'])
 def search_player():
   if request.method == 'POST':
     player_name = request.form['player_name']
     players = db.session.scalars(db.select(Player).where(Player.name.like(f'%{player_name}%'))).all()
-  return render_template('players/search_player.html',
-                  title='Search Player Page',
-                  players=players)
+    return render_template('players/search_player.html',
+                           title='Search Player Page',
+                           players=players)

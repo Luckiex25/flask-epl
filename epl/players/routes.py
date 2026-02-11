@@ -25,7 +25,11 @@ def new_player():
     club_id = int(request.form['club_id'])
 
     player = Player(name=name, position=position, nationality=nationality,
+<<<<<<< HEAD
                     goals=goals, clean_sheets=clean_sheets, squad_no=squad_no, img=img, club_id=club_id)
+=======
+                    goals=goals, squad_no=squad_no, img=img, club_id=club_id)
+>>>>>>> 569a98c98654ca20b7268642ddb396a98dea7c6a
     db.session.add(player)
     db.session.commit()
     flash('add new player successfully', 'success')
@@ -85,6 +89,7 @@ def update_player(id):
                          player=player,
                          clubs=clubs)
 
+<<<<<<< HEAD
 @player_bp.route('/<int:id>/clean_sheets', methods=['GET', 'POST'])
 def clean_sheets(id):
   player = db.session.get(Player, id)
@@ -100,3 +105,5 @@ def clean_sheets(id):
                         title='Clean Sheets Page',
                         player=player)
 
+=======
+>>>>>>> 569a98c98654ca20b7268642ddb396a98dea7c6a
